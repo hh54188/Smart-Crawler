@@ -5,7 +5,7 @@
     mocha test.js -t 20000
 */
 
-var P2D = require("../modules/page2dom");
+var P2D = require("../page2dom");
 var request = require("request");
 
 describe("Basic function", function (done) {

@@ -78,17 +78,22 @@ function ConstructFn(urlArr, requestOptions, selector, callback) {
     var promise = new RSVP.Promise (function(resolve, reject){
         _this._resolve = resolve;
         _this._reject = reject;
-        _this._fetch();
+        _this._beginFetch();
     });
 
-    return promise;
+    var inheritPromise = Object.create(promise);
+    inheritPromise.refetch = this.refetch;
+
+    return inheritPromise;
 }
 
 
-ConstructFn.prototype._fetch = function() {
+ConstructFn.prototype._beginFetch = function() {
 
     var _this = this;
-        _this.complete_count = this.urlArr.length;
+        this.complete_count = this.urlArr.length;
+        this.result = {};
+        this.merge = [];
 
     this.urlArr.forEach(function(url) {
         _this._fetch(url);
@@ -105,15 +110,14 @@ ConstructFn.prototype._checkComplete = function() {
 
 
 ConstructFn.prototype.refetch = function () {
-
+    // RESET:
+    this._beginFetch();
 }
 
 ConstructFn.prototype._fetch = function(url) {
 
     var _this = this;
     this.requestOptions.url = url;
-    this.result = this.result || {};
-    this.merge = this.merge || [];
 
     request(this.requestOptions, function(err, response, body) {
 
