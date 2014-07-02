@@ -1,0 +1,30 @@
+{
+  "name": "Aggregation",
+  "version": "0.0.0",
+  "description": "Aggregation\r ===========",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hh54188/Aggregation.git"
+  },
+  "author": "",
+  "license": "GPL V2",
+  "bugs": {
+    "url": "https://github.com/hh54188/Aggregation/issues"
+  },
+  "homepage": "https://github.com/hh54188/Aggregation",
+  "dependencies": {
+    "cheerio": "~0.12.4",
+    "express": "~3.4.8",
+    "request": "~2.29.0",
+    "rsvp": "^3.0.9",
+    "xml2js": "~0.4.0"
+  },
+  "devDependencies": {
+    "cheerio": "~0.12.4",
+    "express": "~3.4.8"
+  }
+}
