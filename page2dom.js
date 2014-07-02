@@ -108,12 +108,6 @@ ConstructFn.prototype._checkComplete = function() {
     return false;
 };
 
-
-ConstructFn.prototype.refetch = function () {
-    // RESET:
-    this._beginFetch();
-}
-
 ConstructFn.prototype._fetch = function(url) {
 
     var _this = this;
@@ -164,5 +158,12 @@ ConstructFn.prototype._fetch = function(url) {
         }        
     });
 };
+
+
+// external API
+ConstructFn.prototype.refetch = function () {
+    // RESET:
+    this._beginFetch();
+}
 
 module.exports = ConstructFn;
