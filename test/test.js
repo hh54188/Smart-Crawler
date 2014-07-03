@@ -5,15 +5,14 @@
     mocha test.js -t 20000
 */
 
-var P2D = require("../page2dom");
-var request = require("request");
+var Crawler = require("../crawler");
 
 describe("Basic function", function (done) {
     it ("should output cheerio wrapped body to callback when no selector specified", function (done) {
 
         var domain = "http://www.baidu.com";
 
-        new P2D(domain, function (err, result) {
+        new Crawler(domain, function (err, result) {
             if (err) {
                 return;
             }
@@ -34,7 +33,7 @@ describe("Basic function", function (done) {
             return Object.prototype.toString.call(arguments[0]) == "[object Array]"? true: false;
         }
 
-        new P2D(domain, "p", function (err, result) {
+        new Crawler(domain, "p", function (err, result) {
             if (err) {
                 return;
             }
@@ -52,7 +51,7 @@ describe("Basic function", function (done) {
             return Object.prototype.toString.call(arguments[0]) == "[object Array]"? true: false;
         }
 
-        new P2D(domain, "img", function (err, result) {
+        new Crawler(domain, "img", function (err, result) {
             if (err) {
                 return;
             }
@@ -68,7 +67,7 @@ describe("Basic function", function (done) {
         var domain1 = "http://www.baidu.com";
         var domain2 = "http://example.com";
 
-        new P2D([domain1, domain2], function (err, result) {
+        new Crawler([domain1, domain2], function (err, result) {
 
             if (err) {
                 return;
@@ -89,7 +88,7 @@ describe("Basic function", function (done) {
             return Object.prototype.toString.call(arguments[0]) == "[object Array]"? true: false;
         }
 
-        new P2D([domain1, domain2], "p", function (err, result) {
+        new Crawler([domain1, domain2], "p", function (err, result) {
 
             if (err) {
                 return;
@@ -113,7 +112,7 @@ describe ("Merge result", function () {
     }
 
     it ("should return an array when request single url", function (done) {
-        new P2D(domain1, function (err, result, merge) {
+        new Crawler(domain1, function (err, result, merge) {
             if (err) {
                 return;
             }
@@ -125,7 +124,7 @@ describe ("Merge result", function () {
     });
 
     it ("should return an array when request multiple urls", function (done) {
-        new P2D([domain1, domain2], function (err, result, merge) {
+        new Crawler([domain1, domain2], function (err, result, merge) {
             if (err) {
                 return;
             }
@@ -137,7 +136,7 @@ describe ("Merge result", function () {
     });
 
     it ("should return an array when request single url with selector", function (done) {
-        new P2D(domain1, "p", function (err, result, merge) {
+        new Crawler(domain1, "p", function (err, result, merge) {
             if (err) {
                 return;
             }
@@ -149,7 +148,7 @@ describe ("Merge result", function () {
     });
 
     it ("should return an array when request multiple urls with selector", function (done) {
-        new P2D([domain1, domain2], "p", function (err, result, merge) {
+        new Crawler([domain1, domain2], "p", function (err, result, merge) {
             if (err) {
                 return;
             }
@@ -166,7 +165,7 @@ describe('URL', function () {
         Invalid URL TEST;
     */
     it ("should throw an error when url is invalid", function (done) {
-        new P2D("ThisDomainShouldNotExist", function (err, $) {
+        new Crawler("ThisDomainShouldNotExist", function (err, $) {
             if (err) {
                 done();
             }
@@ -177,7 +176,7 @@ describe('URL', function () {
         Invalid URL TEST(without protocal);
     */
     it ("should throw an error without 'http' prefix", function (done) {
-        new P2D("www.baidu.com", function (err, $) {
+        new Crawler("www.baidu.com", function (err, $) {
             if (err) {
                 done();
             }
@@ -188,7 +187,7 @@ describe('URL', function () {
         Valid URL TEST
     */
     it ("should passed when single url is vaild", function (done) {
-        new P2D("http://www.baidu.com", function (err, $) {
+        new Crawler("http://www.baidu.com", function (err, $) {
             if (err) {
                 return;
             }
@@ -200,7 +199,7 @@ describe('URL', function () {
         Multiple valid URL TEST
     */
     it ("should passed when multiple urls is vaild", function (done) {
-        new P2D([
+        new Crawler([
             "http://www.baidu.com", 
             "http://www.renren.com",
             "http://weibo.com"], function (err, $) {
@@ -215,7 +214,7 @@ describe('URL', function () {
         Multiple invalid URL TEST
     */
     it ("should throw an error when one of multiple urls is invalid", function (done) {
-        new P2D([
+        new Crawler([
             "http://www.baidu.com", 
             "ThisDomainShouldNotExist",
             "http://www.renren.com"], function (err, $) {
@@ -229,7 +228,7 @@ describe('URL', function () {
         Request timeout TEST
     */
     it ("should throw an error when request timeout", function (done) {
-        new P2D("http://www.facebook.com", {
+        new Crawler("http://www.facebook.com", {
             timeout: 3000
         }, function (err, $) {
             if (err) {
@@ -242,7 +241,7 @@ describe('URL', function () {
 describe("Promises/A+", function () {
 
     it ("should be rejected when an error throw", function (done) {
-        new P2D("ThisDomainShouldNotExist").then(function (result) {
+        new Crawler("ThisDomainShouldNotExist").then(function (result) {
 
         }, function (err) {
             if (err) {
@@ -252,7 +251,7 @@ describe("Promises/A+", function () {
     });
 
     it ("should be resolved when single URI requested successed", function (done) {
-        new P2D("http://www.baidu.com").then(function (result) {
+        new Crawler("http://www.baidu.com").then(function (result) {
             done();
         }, function (err) {
 
@@ -260,7 +259,7 @@ describe("Promises/A+", function () {
     });
 
     it ("should be resolved when multiple URIs requested successed", function (done) {
-        new P2D([
+        new Crawler([
             "http://www.baidu.com",
             "http://www.renren.com",
             "http://weibo.com"
@@ -272,7 +271,7 @@ describe("Promises/A+", function () {
     });    
 
     it ("should not be resolved when callback passed in", function (done) {
-        new P2D("http://www.baidu.com", function (err, $) {
+        new Crawler("http://www.baidu.com", function (err, $) {
             if (err) return;
             done();
         }).then(function (result) {

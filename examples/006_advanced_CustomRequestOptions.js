@@ -1,4 +1,4 @@
-var P2D = require("../page2dom");
+var P2D = require("../crawler");
 
 var domain = "http://example.com/";
 
