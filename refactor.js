@@ -1,7 +1,8 @@
 var request = require('request');
 var cheerio = require('cheerio');
 
-
+// 默认headers参数
+// 需要模拟User-Agent，否则会被某些网站屏蔽
 var defaultRequestOpts = {
     'encoding': "utf8",
     'headers': {
@@ -36,6 +37,7 @@ Crawler.prototype.fetch = function () {
         }
 
         if (_this.selector) {
+            // 默认请求
             result = $(_this.selector).map(function (index, item) {
                 return $(item);
             });
