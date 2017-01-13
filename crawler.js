@@ -1,4 +1,3 @@
-
 var request = require('request');
 var cheerio = require('cheerio');
 var RSVP = require('rsvp');
@@ -18,7 +17,6 @@ var defaultRequestOpts = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; rv:33.0) Gecko/20100101 Firefox/33.0'
     }
 };
-
 
 
 var mixin = function () {
@@ -114,7 +112,6 @@ ConstructFn.prototype._fetch = function(url) {
     this.requestOptions.url = url;
 
     request(this.requestOptions, function(err, response, body) {
-
         if (err) {
             /*
                 I can't detect whether developer passed resolve or reject function in,

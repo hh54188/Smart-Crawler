@@ -1,4 +1,5 @@
 var Crawler = require("../crawler");
+var fs = require('fs');
 
 var links = [];
 var totalPage = 1;
@@ -7,7 +8,8 @@ for (var i = 1; i <= totalPage ; i++) {
 	links.push(baseUrl + i);
 }
 
-console.log(links);
+var gadioResults = [];
+var gadioCount = 0;
 
 function foramtCommon(str) {
 	str = str.replace(/\n/g, '');
@@ -47,8 +49,10 @@ function fixUsername(name) {
 var crawler = new Crawler(links, ".showcase.showcase-audio", function (err, result, merge) {
 
 	if (err) {
-		return
+		return;
 	}
+
+	gadioCount = merge.length;
 
 	merge.forEach(function ($item) {
 		var obj = {};
@@ -62,8 +66,9 @@ var crawler = new Crawler(links, ".showcase.showcase-audio", function (err, resu
 		var releaseDate = foramtCommon($item.find('.showcase_time').text());
 
 		new Crawler(linkAddress, '.story_djs_items a', function (err, result, merge) {
-			var hosts = [];
 
+			var hosts = [];
+			
 			merge.forEach(function ($item) {
 				var userName = foramtCommon($item.text());
 				var userLinkAddress = foramtCommon($item.attr('href'));
@@ -71,25 +76,32 @@ var crawler = new Crawler(links, ".showcase.showcase-audio", function (err, resu
 
 				hosts.push({
 					userName: fixUsername(userName),
-					userId: userLinkAddress,
 					userLinkAddress: userLinkAddress,
 					avatarImageAddress: avatarImageAddress,
 				});
+			})
 
-				obj = {
-					linkAddress: linkAddress,
-					title: title,
-					coverImageAddress: coverImageAddress,
-					commentsCount: commentsCount,
-					favourCount: favourCount,
-					officialOrder: formatOfficialOrder(officialOrder),
-					releaseDate: formatReleaseDate(officialOrder, releaseDate),
-					releaseDateTimestamp: +new Date(formatReleaseDate(officialOrder, releaseDate)),
-					hosts: hosts
-				}
 
-				console.log(JSON.stringify(obj, null, 4));
-			});
+			obj = {
+				linkAddress: linkAddress,
+				title: title,
+				coverImageAddress: coverImageAddress,
+				commentsCount: commentsCount,
+				favourCount: favourCount,
+				officialOrder: formatOfficialOrder(officialOrder),
+				releaseDate: formatReleaseDate(officialOrder, releaseDate),
+				releaseDateTimestamp: +new Date(formatReleaseDate(officialOrder, releaseDate)),
+				hosts: hosts
+			}
+
+			gadioResults.push(obj);
+			gadioCount--;
+
+			if (gadioCount <= 0) {
+				console.log(gadioResults.length);
+				fs.writeFileSync('./gadio.json', JSON.stringify(gadioResults, null, 4));
+				process.exit();
+			}
 		});
 	});
-})
+});
