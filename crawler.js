@@ -145,6 +145,7 @@ ConstructFn.prototype._fetch = function(url) {
         
         isArray(result)? _this.merge = _this.merge.concat(result): _this.merge.push(result);
         _this.result[url] = result;
+        _this.result['requestOptions'] = _this.requestOptions;
 
         if (_this._checkComplete()) {
 

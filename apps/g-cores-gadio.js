@@ -1,7 +1,7 @@
 var Crawler = require("../crawler");
 
 var links = [];
-var totalPage = 2;
+var totalPage = 1;
 var baseUrl = 'http://www.g-cores.com/categories/9/originals?page=';
 for (var i = 1; i <= totalPage ; i++) {
 	links.push(baseUrl + i);
@@ -26,6 +26,24 @@ function formatReleaseDate(prefixToRemove, str) {
 	return str;
 }
 
+function fixUsername(name) {
+	if (name.indexOf('...') > -1) {
+		if (name.indexOf('andorge') > -1) {
+			name = 'andorgenesis4324';
+		}
+
+		if (name.indexOf('ziondan') > -1) {
+			name = 'ziondandada';
+		}
+
+		if (name.indexOf('gorigor') > -1) {
+			name = 'gorigori_attack';
+		}
+	}
+
+	return name;
+}
+
 var crawler = new Crawler(links, ".showcase.showcase-audio", function (err, result, merge) {
 
 	if (err) {
@@ -35,26 +53,43 @@ var crawler = new Crawler(links, ".showcase.showcase-audio", function (err, resu
 	merge.forEach(function ($item) {
 		var obj = {};
 		
-		var linkAddress = $item.find('.showcase_img a').attr('href');
-		var title = $item.find('.showcase_text h4 a').text();
-		var coverImageAddress = $item.find('.showcase_img a img').attr('src');
-		var favourCount = $item.find('.showcase_meta span').first().text();
-		var commentsCount = $item.find('.showcase_meta span').last().text();
-		var officialOrder = $item.find('.showcase_time span a').text();
-		var releaseDate = $item.find('.showcase_time').text();
-		
-		obj = {
-			linkAddress: foramtCommon(linkAddress),
-			title: foramtCommon(title),
-			coverImageAddress: foramtCommon(coverImageAddress),
-			commentsCount: foramtCommon(commentsCount),
-			favourCount: foramtCommon(favourCount),
-			officialOrder: formatOfficialOrder(foramtCommon(officialOrder)),
-			releaseDate: formatReleaseDate(foramtCommon(officialOrder), foramtCommon(releaseDate)),
-			releaseDateTimestamp: +new Date(formatReleaseDate(foramtCommon(officialOrder), foramtCommon(releaseDate)))
-		}
+		var linkAddress = foramtCommon($item.find('.showcase_img a').attr('href'));
+		var title = foramtCommon($item.find('.showcase_text h4 a').text());
+		var coverImageAddress = foramtCommon($item.find('.showcase_img a img').attr('src'));
+		var favourCount = foramtCommon($item.find('.showcase_meta span').first().text());
+		var commentsCount = foramtCommon($item.find('.showcase_meta span').last().text());
+		var officialOrder = foramtCommon($item.find('.showcase_time span a').text());
+		var releaseDate = foramtCommon($item.find('.showcase_time').text());
 
-		console.log(obj);
+		new Crawler(linkAddress, '.story_djs_items a', function (err, result, merge) {
+			var hosts = [];
+
+			merge.forEach(function ($item) {
+				var userName = foramtCommon($item.text());
+				var userLinkAddress = foramtCommon($item.attr('href'));
+				var avatarImageAddress = foramtCommon($item.find('.img-circle').attr('src'));
+
+				hosts.push({
+					userName: fixUsername(userName),
+					userId: userLinkAddress,
+					userLinkAddress: userLinkAddress,
+					avatarImageAddress: avatarImageAddress,
+				});
+
+				obj = {
+					linkAddress: linkAddress,
+					title: title,
+					coverImageAddress: coverImageAddress,
+					commentsCount: commentsCount,
+					favourCount: favourCount,
+					officialOrder: formatOfficialOrder(officialOrder),
+					releaseDate: formatReleaseDate(officialOrder, releaseDate),
+					releaseDateTimestamp: +new Date(formatReleaseDate(officialOrder, releaseDate)),
+					hosts: hosts
+				}
+
+				console.log(JSON.stringify(obj, null, 4));
+			});
+		});
 	});
-
 })
