@@ -1,4 +1,4 @@
-var Crawler = require("../crawler");
+var Crawler = require("../../crawler");
 var fs = require('fs');
 
 var links = [];
